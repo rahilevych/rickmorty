@@ -11,36 +11,27 @@ import { useQuery } from '@apollo/client';
 import React, { useState } from 'react';
 
 export default function AllEpisodes() {
-  const [selectedSeason, setSelectedSeason] = useState<string | null>(
-    'Season 1'
-  );
+  const [selectedSeason, setSelectedSeason] = useState<string>('Season 1');
 
   const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSeason(event.target.value);
   };
 
-  const getSeason = () => {
-    if (selectedSeason === 'Season 1') {
-      const { data } = useQuery(GETALLEPISODSS1);
-      return data;
-    } else if (selectedSeason === 'Season 2') {
-      const { data } = useQuery(GETALLEPISODSS2);
-      return data;
-    } else if (selectedSeason === 'Season 3') {
-      const { data } = useQuery(GETALLEPISODSS3);
-      return data;
-    } else if (selectedSeason === 'Season 4') {
-      const { data } = useQuery(GETALLEPISODSS4);
-      return data;
-    } else if (selectedSeason === 'Season 5') {
-      const { data } = useQuery(GETALLEPISODSS5);
-      return data;
-    } else {
-      const { data } = useQuery(GETALLEPISODSS1);
-      return data;
-    }
-  };
-  const data = getSeason();
+  const query =
+    selectedSeason === 'Season 1'
+      ? GETALLEPISODSS1
+      : selectedSeason === 'Season 2'
+      ? GETALLEPISODSS2
+      : selectedSeason === 'Season 3'
+      ? GETALLEPISODSS3
+      : selectedSeason === 'Season 4'
+      ? GETALLEPISODSS4
+      : GETALLEPISODSS5;
+
+  const { data, loading, error } = useQuery(query);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   return (
     <>
@@ -74,24 +65,22 @@ export default function AllEpisodes() {
               </tr>
             </thead>
             <tbody>
-              {data &&
-                data.episodes.results.map((episode: Episode) => (
-                  <tr key={episode.id}>
-                    <td className='py-2 px-4 border-b'>{episode.id}</td>
-                    <td className='py-2 px-4 border-b'>{episode.name}</td>
-                    <td className='py-2 px-4 border-b flex flex-row flex-wrap'>
-                      {episode.characters.map((character: Character) => {
-                        return (
-                          <img
-                            className='w-14 h-14'
-                            src={character.image}
-                            alt=''
-                          />
-                        );
-                      })}
-                    </td>
-                  </tr>
-                ))}
+              {data.episodes.results.map((episode: Episode) => (
+                <tr key={episode.id}>
+                  <td className='py-2 px-4 border-b'>{episode.id}</td>
+                  <td className='py-2 px-4 border-b'>{episode.name}</td>
+                  <td className='py-2 px-4 border-b flex flex-row flex-wrap'>
+                    {episode.characters.map((character: Character) => (
+                      <img
+                        key={character.id}
+                        className='w-14 h-14'
+                        src={character.image}
+                        alt={character.name}
+                      />
+                    ))}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         ) : (
