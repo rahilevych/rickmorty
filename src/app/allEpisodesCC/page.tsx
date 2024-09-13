@@ -8,7 +8,7 @@ import {
   GETALLEPISODSS5,
 } from '@/queries/episodes';
 import { useQuery } from '@apollo/client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 export default function AllEpisodes() {
   const [selectedSeason, setSelectedSeason] = useState<string | null>(

@@ -1,7 +1,6 @@
 'use client';
 
 import Card from '@/components/Card';
-import NavBar from '@/components/NavBar';
 import { APIResponse, Character } from '@/models/custom-types';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
